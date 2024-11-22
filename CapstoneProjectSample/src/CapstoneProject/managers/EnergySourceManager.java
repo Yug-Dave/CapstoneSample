@@ -13,7 +13,7 @@ public class EnergySourceManager {
 
     public static void initialize() {
         energySources.put("summer", new EnergySource("Solar"));
-        energySources.put("windy", new EnergySource("Wind"));
+        energySources.put("windy", new EnergySource("Windy"));
         energySources.put("rainy", new EnergySource("Electricity"));
     }
 
