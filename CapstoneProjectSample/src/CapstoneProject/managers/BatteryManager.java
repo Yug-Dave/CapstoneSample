@@ -27,7 +27,21 @@ public class BatteryManager {
     public static void showBatteryStatus() {
         System.out.println("\nBattery Status:");
         for (Battery battery : batteries) {
-            System.out.println(battery.getName() + ": " + battery.getCharge() + "%");
+            int charge = battery.getCharge();
+            StringBuilder statusBar = new StringBuilder("[");
+            
+            // Create a 20-character status bar
+            int filledLength = charge / 5; // Each '#' represents 5%
+            for (int i = 0; i < 20; i++) {
+                if (i < filledLength) {
+                    statusBar.append("#"); // Filled portion
+                } else {
+                    statusBar.append("-"); // Unfilled portion
+                }
+            }
+            statusBar.append("]"); // Close the status bar
+
+            System.out.println(battery.getName() + ": " + statusBar + " " + charge + "% ");
         }
     }
 
