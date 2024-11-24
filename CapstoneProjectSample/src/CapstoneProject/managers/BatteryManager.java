@@ -16,8 +16,6 @@ public class BatteryManager {
         batteries.add(new Battery("Battery 4", 90));
         batteries.add(new Battery("Battery 5", 80));
         batteries.add(new Battery("Battery 6", 70));
-
-        startRechargeThread();
     }
 
     public static List<Battery> getBatteries() {
@@ -43,25 +41,5 @@ public class BatteryManager {
 
             System.out.println(battery.getName() + ": " + statusBar + " " + charge + "% ");
         }
-    }
-
-    private static void startRechargeThread() {
-        new Thread(() -> {
-            while (true) {
-                synchronized (lock) {
-                    for (Battery battery : batteries) {
-                        if (battery.getCharge() < 30) {
-                            battery.recharge(30);
-                            System.out.println(battery.getName() + " recharging... Current: " + battery.getCharge() + "%");
-                        }
-                    }
-                }
-                try {
-                    Thread.sleep(2000); // Simulate recharge time
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }).start();
     }
 }
