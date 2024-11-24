@@ -88,6 +88,7 @@ public class SmartObjectManager {
                         if (battery == null || battery.getCharge() < object.getEnergyRequired()) {
                             displayStaticFrame(object.getName(), "No suitable battery found", "---", "---");
                             LogManager.addLog(object.getName(), "None", "No Suitable Battery Found");
+                            
                             break;
                         } else {
                             displayStaticFrame(object.getName(), "Switched to " + battery.getName(), battery.getName(), battery.getCharge() + "%");
