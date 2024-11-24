@@ -2,6 +2,7 @@ package CapstoneProject.managers;
 
 import CapstoneProject.models.Battery;
 import CapstoneProject.models.EnergySource;
+import CapstoneProject.models.SmartObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;

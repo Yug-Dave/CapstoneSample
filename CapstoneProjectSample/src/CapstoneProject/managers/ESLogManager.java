@@ -29,9 +29,9 @@ public class ESLogManager {
 		List<LogESEntry> filteredESLogs = new ArrayList<>();
 
 		switch (filterType.toLowerCase()) {
-		case "energy source name" -> filteredESLogs
+		case "source" -> filteredESLogs
 				.addAll(ESlogs.stream().filter(log -> log.getEnergySource().equalsIgnoreCase(filterValue)).toList());
-		case "battery name" -> filteredESLogs
+		case "battery" -> filteredESLogs
 				.addAll(ESlogs.stream().filter(log -> log.getBatteryName().equalsIgnoreCase(filterValue)).toList());
 		default -> {
 			System.out.println("Invalid filter type.");
