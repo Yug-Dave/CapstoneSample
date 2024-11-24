@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 
 public class LogManager {
 	private static final List<LogEntry> logs = new ArrayList<>();
-	private static final List<LogESEntry> ESlogs = new ArrayList<>();
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static synchronized void addLog(String objectName, String batteryName, String action) {
@@ -18,10 +17,6 @@ public class LogManager {
 		logs.add(new LogEntry(objectName, batteryName, action, timestamp));
 	}
 
-	public static synchronized void addESLog(String batteryName, String currentCharge, String energySource) {
-		String timestamp = DATE_FORMAT.format(new Date());
-		ESlogs.add(new LogESEntry(energySource, batteryName, currentCharge, timestamp));
-	}
 
 	public static synchronized void viewLogs() {
 		if (logs.isEmpty()) {
@@ -31,13 +26,6 @@ public class LogManager {
 		displayLogs(logs);
 	}
 	
-	public static synchronized void viewESLogs() {
-		if (ESlogs.isEmpty()) {
-			System.out.println("No logs available.");
-			return;
-		}
-		displayESLogs(ESlogs);
-	}
 
 	public static synchronized void viewLogsByFilter(String filterType, String filterValue) {
 		List<LogEntry> filteredLogs = new ArrayList<>();
@@ -92,17 +80,6 @@ public class LogManager {
 		}
 	}
 	
-	private static void displayESLogs(List<LogESEntry> logs) {
-		System.out.println("---------------------------------------------------");
-		System.out.printf("| %-5s | %-15s | %-15s | %-20s | %-20s |\n", "ID", "Energy Source", "Battery", "Current Charge",
-				"Timestamp");
-		System.out.println("---------------------------------------------------");
-		for (int i = 0; i < logs.size(); i++) {
-			LogESEntry log = logs.get(i);
-			System.out.printf("| %-5d | %-15s | %-15s | %-20s | %-20s |\n", i, log.getEnergySource(),
-					log.getBatteryName(), log.getCurrentCharge(), log.getTimestamp());
-		}
-	}
 
 	public static synchronized List<LogEntry> getLogs() {
 		return logs;

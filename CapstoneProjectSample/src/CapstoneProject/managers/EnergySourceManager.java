@@ -45,7 +45,7 @@ public class EnergySourceManager {
 	                synchronized (battery) { // Ensure thread safety
 	                    battery.recharge(5); // Increment battery charge
 	                    percentages[index] = battery.getCharge(); // Update the percentage array
-	                    LogManager.addESLog(String.valueOf(battery.getCharge()) , battery.getName(), "Consuming Power");
+	                    ESLogManager.addESLog(source.getName() , battery.getName(), String.valueOf(battery.getCharge()));
 	                }
 
 	                // Simulate charging time

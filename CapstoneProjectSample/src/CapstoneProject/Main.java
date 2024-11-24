@@ -101,10 +101,10 @@ public class Main {
             switch (logChoice) {
                 case 1 -> {
                     System.out.println("\nViewing All Logs:");
-                    LogManager.viewESLogs();
+                    ESLogManager.viewESLogs();
                 }
                 case 2 -> {
-                    filterLogs(scanner);
+                    filterESLogs(scanner);
                 }
                 case 3 -> {
                     System.out.print("Enter Log ID to delete (or -1 to delete all logs): ");
@@ -114,21 +114,21 @@ public class Main {
                         System.out.print("Are you sure you want to delete all logs? (yes/no): ");
                         String confirm = scanner.nextLine();
                         if (confirm.equalsIgnoreCase("yes")) {
-                            while (LogManager.getLogs().size() > 0) {
-                                LogManager.deleteLog(0); // Continuously delete logs until empty
+                            while (ESLogManager.getESLogs().size() > 0) {
+                                ESLogManager.deleteESLog(0); // Continuously delete logs until empty
                             }
                             System.out.println("All logs deleted.");
                         } else {
                             System.out.println("Delete operation canceled.");
                         }
                     } else {
-                        LogManager.deleteLog(logId);
+                        ESLogManager.deleteESLog(logId);
                     }
                 }
                 case 4 -> {
                 	 System.out.print("Enter file path to export logs (e.g., logs.csv): ");
                 	    String filePath = scanner.nextLine();
-                	    LogManager.exportLogs(filePath);
+                	    ESLogManager.exportESLogs(filePath);
                 }
                 case 5 -> backToMain = true;
                 default -> System.out.println("Invalid choice. Please try again.");
@@ -216,6 +216,41 @@ public class Main {
                     try {
                         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
                         LogManager.viewLogsByDate(date);
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format. Please try again.");
+                    }
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        
+        
+        private static void filterESLogs(Scanner scanner) {
+            System.out.println("\n===== Filter Logs =====");
+            System.out.println("1. Filter by Energy Resource Name");
+            System.out.println("2. Filter by Battery Name");
+            System.out.println("3. Filter by Date");
+            System.out.print("Enter your choice: ");
+            int filterChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (filterChoice) {
+                case 1 -> {
+                    System.out.print("Enter Energy Source Name: ");
+                    String objectName = scanner.nextLine();
+                    ESLogManager.viewESLogsByFilter("object", objectName);
+                }
+                case 2 -> {
+                    System.out.print("Enter Battery Name: ");
+                    String batteryName = scanner.nextLine();
+                    ESLogManager.viewESLogsByFilter("battery", batteryName);
+                }
+                case 3 -> {
+                    System.out.print("Enter Date (yyyy-MM-dd): ");
+                    String dateString = scanner.nextLine();
+                    try {
+                        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                        ESLogManager.viewESLogsByDate(date);
                     } catch (ParseException e) {
                         System.out.println("Invalid date format. Please try again.");
                     }
