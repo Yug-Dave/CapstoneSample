@@ -56,7 +56,7 @@ public class EnergySourceManager {
 	                    return; // Exit the thread
 	                }
 	            }
-	            System.out.println(battery.getName() + " is now fully charged.");
+//	            System.out.println(battery.getName() + " is now fully charged.");
 	        });
 
 	        threads.add(chargingThread);
