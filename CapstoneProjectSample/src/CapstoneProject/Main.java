@@ -28,7 +28,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter weather (summer, windy, rainy): ");
+                    System.out.print("Enter weather (sunny, windy, rainy): ");
                     String weather = scanner.nextLine();
                     EnergySourceManager.chargeBatteries(weather);
                     break;

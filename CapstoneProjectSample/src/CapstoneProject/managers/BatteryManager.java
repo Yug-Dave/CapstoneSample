@@ -14,8 +14,8 @@ public class BatteryManager {
         batteries.add(new Battery("Battery 2", 30));
         batteries.add(new Battery("Battery 3", 60));
         batteries.add(new Battery("Battery 4", 90));
-        batteries.add(new Battery("Battery 5", 80));
-        batteries.add(new Battery("Battery 6", 70));
+//        batteries.add(new Battery("Battery 5", 80));
+//        batteries.add(new Battery("Battery 6", 70));
     }
 
     public static List<Battery> getBatteries() {
