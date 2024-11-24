@@ -119,7 +119,7 @@ public class Main {
                         System.out.println("\nViewing All Logs:");
                         ESLogManager.viewESLogs(); // Changed to ESLogManager
                     }
-                    case 2 -> filterLogs(scanner); // Assuming filterLogs works with both SmartObject and ES logs
+                    case 2 -> filterESLogs(scanner); // Assuming filterLogs works with both SmartObject and ES logs
                     case 3 -> {
                         System.out.print("Enter Log ID to delete (or -1 to delete all logs): ");
                         int logId = scanner.nextInt();
@@ -301,7 +301,7 @@ public class Main {
                 case 1 -> {
                     System.out.print("Enter Energy Source Name: ");
                     String objectName = scanner.nextLine();
-                    ESLogManager.viewESLogsByFilter("object", objectName);
+                    ESLogManager.viewESLogsByFilter("source", objectName);
                 }
                 case 2 -> {
                     System.out.print("Enter Battery Name: ");
