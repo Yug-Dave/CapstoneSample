@@ -101,7 +101,7 @@ public class Main {
             switch (logChoice) {
                 case 1 -> {
                     System.out.println("\nViewing All Logs:");
-                    LogManager.viewLogs();
+                    LogManager.viewESLogs();
                 }
                 case 2 -> {
                     filterLogs(scanner);
