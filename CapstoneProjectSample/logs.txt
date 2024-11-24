@@ -1,0 +1,23 @@
+Fan | Battery 4 | Consuming Power | 2024-11-24 11:58:19
+TV | Battery 1 | Consuming Power | 2024-11-24 11:58:19
+Fan | Battery 5 | Consuming Power | 2024-11-24 11:58:20
+TV | Battery 4 | Consuming Power | 2024-11-24 11:58:21
+Fan | Battery 6 | Consuming Power | 2024-11-24 11:58:22
+TV | Battery 3 | Consuming Power | 2024-11-24 11:58:22
+TV | Battery 5 | Consuming Power | 2024-11-24 11:58:23
+Fan | Battery 1 | Consuming Power | 2024-11-24 11:58:23
+Fan | Battery 6 | Consuming Power | 2024-11-24 11:58:24
+TV | Battery 4 | Consuming Power | 2024-11-24 11:58:24
+TV | Battery 1 | Consuming Power | 2024-11-24 11:58:25
+Fan | Battery 2 | Consuming Power | 2024-11-24 11:58:25
+Fan | Battery 3 | Consuming Power | 2024-11-24 11:58:26
+TV | Battery 3 | Battery Low, Switching... | 2024-11-24 11:58:26
+TV | Battery 5 | Switched Battery | 2024-11-24 11:58:26
+Fan | Battery 5 | Consuming Power | 2024-11-24 11:58:27
+TV | Battery 6 | Consuming Power | 2024-11-24 11:58:27
+Fan | Battery 2 | Battery Low, Switching... | 2024-11-24 11:58:28
+Fan | None | No Suitable Battery Found | 2024-11-24 11:58:28
+Fan | None | Stopped Consumption | 2024-11-24 11:58:28
+TV | Battery 2 | Battery Low, Switching... | 2024-11-24 11:58:28
+TV | None | No Suitable Battery Found | 2024-11-24 11:58:28
+TV | None | Stopped Consumption | 2024-11-24 11:58:28

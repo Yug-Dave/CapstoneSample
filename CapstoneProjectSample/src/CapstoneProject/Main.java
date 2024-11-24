@@ -2,6 +2,9 @@ package CapstoneProject;
 
 import CapstoneProject.managers.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -42,7 +45,7 @@ public class Main {
                 	    SmartObjectManager.toggleSmartObjects(names);
                 	    break;
                 case 4:
-                    LogManager.showLogs();
+                	accessLogs(scanner);
                     break;
                 case 5:
                     BatteryManager.showBatteryStatus();
@@ -56,5 +59,92 @@ public class Main {
             }
         }
     }
-}
+    
+    private static void accessLogs(Scanner scanner) {
+        boolean backToMain = false;
+
+        while (!backToMain) {
+            System.out.println("\n===== Log Management =====");
+            System.out.println("1. View All Logs");
+            System.out.println("2. View Logs by Filter");
+            System.out.println("3. Delete Log by ID");
+            System.out.println("4. Export Logs to File");
+            System.out.println("5. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            int logChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (logChoice) {
+                case 1 -> {
+                    System.out.println("\nViewing All Logs:");
+                    LogManager.viewLogs();
+                }
+                case 2 -> {
+                    filterLogs(scanner);
+                }
+                case 3 -> {
+                    System.out.print("Enter Log ID to delete (or -1 to delete all logs): ");
+                    int logId = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
+                    if (logId == -1) {
+                        System.out.print("Are you sure you want to delete all logs? (yes/no): ");
+                        String confirm = scanner.nextLine();
+                        if (confirm.equalsIgnoreCase("yes")) {
+                            while (LogManager.getLogs().size() > 0) {
+                                LogManager.deleteLog(0); // Continuously delete logs until empty
+                            }
+                            System.out.println("All logs deleted.");
+                        } else {
+                            System.out.println("Delete operation canceled.");
+                        }
+                    } else {
+                        LogManager.deleteLog(logId);
+                    }
+                }
+                case 4 -> {
+                	 System.out.print("Enter file path to export logs (e.g., logs.csv): ");
+                	    String filePath = scanner.nextLine();
+                	    LogManager.exportLogs(filePath);
+                }
+                case 5 -> backToMain = true;
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+    
+        private static void filterLogs(Scanner scanner) {
+            System.out.println("\n===== Filter Logs =====");
+            System.out.println("1. Filter by Smart Object Name");
+            System.out.println("2. Filter by Battery Name");
+            System.out.println("3. Filter by Date");
+            System.out.print("Enter your choice: ");
+            int filterChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (filterChoice) {
+                case 1 -> {
+                    System.out.print("Enter Smart Object Name: ");
+                    String objectName = scanner.nextLine();
+                    LogManager.viewLogsByFilter("object", objectName);
+                }
+                case 2 -> {
+                    System.out.print("Enter Battery Name: ");
+                    String batteryName = scanner.nextLine();
+                    LogManager.viewLogsByFilter("battery", batteryName);
+                }
+                case 3 -> {
+                    System.out.print("Enter Date (yyyy-MM-dd): ");
+                    String dateString = scanner.nextLine();
+                    try {
+                        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+                        LogManager.viewLogsByDate(date);
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format. Please try again.");
+                    }
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
 

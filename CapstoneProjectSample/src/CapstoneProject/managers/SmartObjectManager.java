@@ -31,6 +31,7 @@ public class SmartObjectManager {
                     if (object.isActive()) {
                         startObjectConsumption(object); // Start consumption
                     } else {
+                        LogManager.addLog(object.getName(), "None", "Stopped Consumption");
                         System.out.println(object.getName() + " is now OFF");
                     }
                     anyFound = true;
@@ -45,8 +46,7 @@ public class SmartObjectManager {
 
     private static void startObjectConsumption(SmartObject object) {
         AtomicBoolean stopFlag = new AtomicBoolean(false);
-        
-        // Thread for key listener to interrupt consumption
+
         Thread keyListenerThread = new Thread(() -> {
             System.out.println("Press ENTER at any time to stop all operations and return to the main menu.");
             try {
@@ -59,63 +59,63 @@ public class SmartObjectManager {
         keyListenerThread.start();
 
         Thread consumptionThread = new Thread(() -> {
-            while (object.isActive() || !stopFlag.get()) {
-                Battery battery = getAvailableBattery();
-                if (battery == null) {
-                    displayStaticFrame(object.getName(), "No batteries available", "---", "---");
-                    break;
-                }
-
-                boolean consumed = false;
-                try {
-                    // Lock access to the battery
-                    batteryLock.lock();
-                    if (battery.getCharge() >= object.getEnergyRequired() || !stopFlag.get()) {
-                        battery.discharge(object.getEnergyRequired());
-                        consumed = true;
-                        displayStaticFrame(object.getName(), "Consuming power", battery.getName(), battery.getCharge() + "%");
-                    }
-                } finally {
-                    batteryLock.unlock(); // Ensure lock is released
-                }
-
-                if (!consumed && !stopFlag.get()) {
-                    displayStaticFrame(object.getName(), battery.getName() + " is low. Switching...", "---", "---");
-                    battery = getAvailableBattery(); // Find another battery
-                    if (battery == null || battery.getCharge() < object.getEnergyRequired() || !stopFlag.get()) {
-                        displayStaticFrame(object.getName(), "No suitable battery found", "---", "---");
+            try {
+                while (object.isActive() && !stopFlag.get()) {
+                    Battery battery = getAvailableBattery();
+                    if (battery == null) {
+                        displayStaticFrame(object.getName(), "No batteries available", "---", "---");
+                        LogManager.addLog(object.getName(), "None", "No Batteries Available");
                         break;
-                    } else {
-                        displayStaticFrame(object.getName(), "Switched to " + battery.getName(), battery.getName(), battery.getCharge() + "%");
                     }
-                }
 
-                try {
+                    boolean consumed = false;
+                    try {
+                        batteryLock.lock();
+                        if (battery.getCharge() >= object.getEnergyRequired() && !stopFlag.get()) {
+                            battery.discharge(object.getEnergyRequired());
+                            consumed = true;
+                            displayStaticFrame(object.getName(), "Consuming power", battery.getName(), battery.getCharge() + "%");
+                            LogManager.addLog(object.getName(), battery.getName(), "Consuming Power");
+                        }
+                    } finally {
+                        batteryLock.unlock();
+                    }
+
+                    if (!consumed && !stopFlag.get()) {
+                        displayStaticFrame(object.getName(), battery.getName() + " is low. Switching...", "---", "---");
+                        LogManager.addLog(object.getName(), battery.getName(), "Battery Low, Switching...");
+                        battery = getAvailableBattery();
+                        if (battery == null || battery.getCharge() < object.getEnergyRequired()) {
+                            displayStaticFrame(object.getName(), "No suitable battery found", "---", "---");
+                            LogManager.addLog(object.getName(), "None", "No Suitable Battery Found");
+                            break;
+                        } else {
+                            displayStaticFrame(object.getName(), "Switched to " + battery.getName(), battery.getName(), battery.getCharge() + "%");
+                            LogManager.addLog(object.getName(), battery.getName(), "Switched Battery");
+                        }
+                    }
+
                     Thread.sleep(1000); // Simulate time taken for energy consumption
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    displayStaticFrame(object.getName(), "Consumption interrupted!", "---", "---");
-                    object.toggle();
-                    System.out.println(object.getName() + " is now OFF");
-                    break;
                 }
-            }
-            // Turn off the object when consumption ends
-            if (!stopFlag.get()) {
-                object.toggle();
-                System.out.println(object.getName() + " is now OFF");
+            } catch (InterruptedException e) {
+                System.out.println("Consumption interrupted for " + object.getName());
+                Thread.currentThread().interrupt();
+            } finally {
+                if (object.isActive()) {
+                    object.toggle();
+                    LogManager.addLog(object.getName(), "None", "Stopped Consumption");
+                    System.out.println(object.getName() + " is now OFF");
+                }
             }
         });
 
-        // Start the thread
         consumptionThread.start();
 
-        // Ensure the key listener thread interrupts the consumption thread
         new Thread(() -> {
             try {
-                keyListenerThread.join(); // Wait for key listener to finish
+                keyListenerThread.join();
                 if (stopFlag.get()) {
-                    consumptionThread.interrupt(); // Interrupt the consumption thread
+                    consumptionThread.interrupt();
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -124,8 +124,7 @@ public class SmartObjectManager {
     }
 
     private static void displayStaticFrame(String name, String status, String batteryName, String chargeLevel) {
-        // Print the static frame (only once)
-        System.out.println("\033[2J"); // Clear the screen
+        System.out.println("\033[2J");
         System.out.println("---------------------------------------------------");
         System.out.printf("| Smart Object: %-33s |\n", name);
         System.out.printf("| Status: %-40s |\n", status);
