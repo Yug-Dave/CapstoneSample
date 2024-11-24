@@ -106,6 +106,15 @@ public class SmartObjectManager {
                     object.toggle();
                     LogManager.addLog(object.getName(), "None", "Stopped Consumption");
                     System.out.println(object.getName() + " is now OFF");
+                    
+                    System.out.println("\nMenu:");
+                    System.out.println("1. Charging");
+                    System.out.println("2. Add new smart object");
+                    System.out.println("3. ON/OFF smart objects");
+                    System.out.println("4. Show logs");
+                    System.out.println("5. Batteries");
+                    System.out.println("6. Exit");
+                    System.out.print("Choose an option: ");
                 }
             }
         });

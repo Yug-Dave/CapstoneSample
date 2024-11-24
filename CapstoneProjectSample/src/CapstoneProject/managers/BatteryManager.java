@@ -32,9 +32,9 @@ public class BatteryManager {
             int filledLength = charge / 5; // Each '#' represents 5%
             for (int i = 0; i < 20; i++) {
                 if (i < filledLength) {
-                    statusBar.append("#"); // Filled portion
+                    statusBar.append("="); // Filled portion
                 } else {
-                    statusBar.append("-"); // Unfilled portion
+                    statusBar.append(" "); // Unfilled portion
                 }
             }
             statusBar.append("]"); // Close the status bar
