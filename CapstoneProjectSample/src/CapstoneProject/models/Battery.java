@@ -3,10 +3,12 @@ package CapstoneProject.models;
 public class Battery {
     private final String name;
     private int charge; // Percentage (0-100)
+    private int capacity; // KW
 
-    public Battery(String name, int charge) {
+    public Battery(String name, int capacity, int charge) {
         this.name = name;
-        this.charge = charge; // Fully charged
+        this.capacity = capacity;
+        this.charge = charge;
     }
 
 
@@ -14,7 +16,12 @@ public class Battery {
         return name;
     }
 
-    public int getCharge() {
+    public int getCapacity() {
+		return capacity;
+	}
+
+
+	public int getCharge() {
         return charge;
     }
 

@@ -14,9 +14,9 @@ public class EnergySourceManager {
 	private static final Map<String, EnergySource> energySources = new HashMap<>();
 
 	public static void initialize() {
-		energySources.put("sunny", new EnergySource("Solar"));
-		energySources.put("windy", new EnergySource("Windyy"));
-		energySources.put("rainy", new EnergySource("Electricity"));
+		energySources.put("sunny", new EnergySource("Solar", 200));
+		energySources.put("windy", new EnergySource("Windyy", 300));
+		energySources.put("rainy", new EnergySource("Electricity", 400));
 	}
 
 	public static void chargeBatteries(String weather) {
@@ -146,5 +146,7 @@ public class EnergySourceManager {
 	    // Print the updated progress
 	    System.out.println(output);
 	}
+
+	
 
 }

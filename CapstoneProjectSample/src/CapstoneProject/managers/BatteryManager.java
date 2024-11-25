@@ -10,10 +10,10 @@ public class BatteryManager {
     private static final Object lock = new Object();
 
     public static void initialize() {
-        batteries.add(new Battery("Battery 1", 80));
-        batteries.add(new Battery("Battery 2", 30));
-        batteries.add(new Battery("Battery 3", 60));
-        batteries.add(new Battery("Battery 4", 90));
+        batteries.add(new Battery("Battery 1", 40, 80));
+        batteries.add(new Battery("Battery 2", 25,  30));
+        batteries.add(new Battery("Battery 3", 30, 60));
+        batteries.add(new Battery("Battery 4", 50, 90));
 //        batteries.add(new Battery("Battery 5", 80));
 //        batteries.add(new Battery("Battery 6", 70));
     }
