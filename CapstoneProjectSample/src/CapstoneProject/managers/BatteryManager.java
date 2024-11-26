@@ -10,10 +10,10 @@ public class BatteryManager {
     private static final Object lock = new Object();
 
     public static void initialize() {
-        batteries.add(new Battery("Battery 1", 40, 80));
-        batteries.add(new Battery("Battery 2", 25,  30));
-        batteries.add(new Battery("Battery 3", 30, 60));
-        batteries.add(new Battery("Battery 4", 50, 90));
+        batteries.add(new Battery("Battery 1", 400, 50));
+        batteries.add(new Battery("Battery 2", 300,  70));
+        batteries.add(new Battery("Battery 3", 200, 25));
+        batteries.add(new Battery("Battery 4", 100, 30));
 //        batteries.add(new Battery("Battery 5", 80));
 //        batteries.add(new Battery("Battery 6", 70));
     }
@@ -25,7 +25,8 @@ public class BatteryManager {
     public static void showBatteryStatus() {
         System.out.println("\nBattery Status:");
         for (Battery battery : batteries) {
-            int charge = battery.getCharge();
+        	 int charge = battery.getCharge() * 100 / battery.getCapacity();
+//            int charge = battery.getCharge();
             StringBuilder statusBar = new StringBuilder("[");
             
             // Create a 20-character status bar

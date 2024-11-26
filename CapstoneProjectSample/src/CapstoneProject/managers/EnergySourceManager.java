@@ -1,6 +1,6 @@
 package CapstoneProject.managers;
 
-import CapstoneProject.models.Battery;
+import CapstoneProject.models.*;
 import CapstoneProject.models.EnergySource;
 import CapstoneProject.models.SmartObject;
 
@@ -16,9 +16,9 @@ public class EnergySourceManager {
 	private static final Map<String, EnergySource> energySources = new HashMap<>();
 
 	public static void initialize() {
-		energySources.put("sunny", new EnergySource("Solar", 36000));
-		energySources.put("windy", new EnergySource("Windy", 54000));
-		energySources.put("rainy", new EnergySource("Electricity", 72000));
+		energySources.put("sunny", new EnergySource("Solar", 15));
+		energySources.put("windy", new EnergySource("Windy", 8));
+		energySources.put("rainy", new EnergySource("Electricity", 35));
 	}
 
 	public static Map<String, EnergySource> getEnergySources() {
@@ -29,99 +29,109 @@ public class EnergySourceManager {
 
 	public static void chargeBatteries(String weather) {
 		EnergySource source = energySources.get(weather.toLowerCase());
-		if (source == null) {
-			System.out.println("Invalid weather. Please try again.");
-			return;
-		}
+	    if (source == null) {
+	        System.out.println("Invalid weather. Please try again.");
+	        return;
+	    }
 
-		System.out.println("Using " + source.getName() + " energy to charge batteries...");
-		List<Battery> batteries = BatteryManager.getBatteries();
+	    System.out.println("Using " + source.getName() + " energy to charge batteries...");
+	    List<Battery> batteries = BatteryManager.getBatteries();
 
-		// Initialize an array to track percentages for progress bars
-		int[] percentages = new int[batteries.size()];
-		for (int i = 0; i < batteries.size(); i++) {
-			percentages[i] = batteries.get(i).getCharge(); // Start with each battery's initial charge
-		}
+	    // Initialize an array to track percentages for progress bars
+	    int[] percentages = new int[batteries.size()];
+	    for (int i = 0; i < batteries.size(); i++) {
+	        percentages[i] = batteries.get(i).getChargePercentage(); // Use percentage method
+	    }
 
-		// Create a thread for each battery to charge concurrently
-		List<Thread> threads = new ArrayList<>();
-		for (int i = 0; i < batteries.size(); i++) {
-			int index = i; // Required for use in lambda expression
-			Battery battery = batteries.get(i);
+	    // Create a thread for each battery to charge concurrently
+	    List<Thread> threads = new ArrayList<>();
+	    for (int i = 0; i < batteries.size(); i++) {
+	        int index = i; // Required for use in lambda expression
+	        Battery battery = batteries.get(i);
 
-			Thread chargingThread = new Thread(() -> {
-				while (battery.getCharge() < 100) {
-					synchronized (battery) { // Ensure thread safety
-						battery.recharge(5); // Increment battery charge
-						percentages[index] = battery.getCharge(); // Update the percentage array
-						ESLogManager.addESLog(source.getName(), battery.getName(), String.valueOf(battery.getCharge()));
-					}
+	        Thread chargingThread = new Thread(() -> {
+	            while (true) {
+	                synchronized (battery) { // Ensure thread-safe access
+	                    if (battery.getChargePercentage() >= 100) {
+	                        break; // Exit if battery is fully charged
+	                    }
 
-					// Simulate charging time
-					try {
-						Thread.sleep(500); // Adjust the speed of charging
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						System.out.println("Recharging interrupted for " + battery.getName());
-						return; // Exit the thread
-					}
-				}
-//	            System.out.println(battery.getName() + " is now fully charged.");
-			});
+	                    battery.recharge(source.getPower()); // Increment battery charge
+	                    synchronized (percentages) {
+	                        percentages[index] = battery.getChargePercentage(); // Update percentages
+	                    }
+	                    ESLogManager.addESLog(source.getName(), battery.getName(), String.valueOf(battery.getCharge()));
 
-			threads.add(chargingThread);
-			chargingThread.start();
-		}
+	                }
 
-		// Display progress bars in the main thread
-		Thread progressBarThread = new Thread(() -> {
-			try {
-				while (true) {
-					// Check if all batteries are fully charged
-					boolean allCharged = true;
-					for (int percentage : percentages) {
-						if (percentage < 100) {
-							allCharged = false;
-							break;
-						}
-					}
+	                // Simulate charging time
+	                try {
+	                    Thread.sleep(500); // Adjust the speed of charging
+	                } catch (InterruptedException e) {
+	                    Thread.currentThread().interrupt();
+	                    System.out.println("Recharging interrupted for " + battery.getName());
+	                    return; // Exit the thread
+	                }
+	            }
+	        });
 
-					// Display progress bars
-					ProgressBar(percentages);
+	        threads.add(chargingThread);
+	        chargingThread.start();
+	    }
 
-					// Exit when all batteries are fully charged
-					if (allCharged)
-						break;
+	    // Display progress bars in the main thread
+	    Thread progressBarThread = new Thread(() -> {
+	        try {
+	            while (true) {
+	                // Check if all batteries are fully charged
+	                boolean allCharged;
+	                synchronized (percentages) {
+	                    allCharged = true;
+	                    for (int percentage : percentages) {
+	                        if (percentage < 100) {
+	                            allCharged = false;
+	                            break;
+	                        }
+	                    }
+	                }
 
-					Thread.sleep(200); // Update progress bars every 200ms
-				}
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				System.out.println("Progress bar display interrupted.");
-			}
-		});
+	                // Display progress bars
+	                ProgressBar(percentages);
 
-		progressBarThread.start();
+	                // Exit when all batteries are fully charged
+	                if (allCharged) {
+	                    break;
+	                }
 
-		// Wait for all threads to complete
-		for (Thread thread : threads) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				System.out.println("Charging process interrupted.");
-			}
-		}
+	                Thread.sleep(200); // Update progress bars every 200ms
+	            }
+	        } catch (InterruptedException e) {
+	            Thread.currentThread().interrupt();
+	            System.out.println("Progress bar display interrupted.");
+	        }
+	    });
 
-		// Wait for the progress bar thread to complete
-		try {
-			progressBarThread.join();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			System.out.println("Progress bar process interrupted.");
-		}
+	    progressBarThread.start();
 
-		System.out.println("All batteries are fully charged.");
+	    // Wait for all threads to complete
+	    for (Thread thread : threads) {
+	        try {
+	            thread.join();
+	        } catch (InterruptedException e) {
+	            Thread.currentThread().interrupt();
+	            System.out.println("Charging process interrupted.");
+	        }
+	    }
+
+	    // Wait for the progress bar thread to complete
+	    try {
+	        progressBarThread.join();
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        System.out.println("Progress bar process interrupted.");
+	    }
+
+	    System.out.println("All batteries are fully charged.");
 	}
 
 	public static void ProgressBar(int[] percentages) throws InterruptedException {
