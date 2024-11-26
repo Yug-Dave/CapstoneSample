@@ -2,21 +2,17 @@ package CapstoneProject.managers;
 
 import CapstoneProject.models.*;
 import CapstoneProject.models.EnergySource;
-import CapstoneProject.models.SmartObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class EnergySourceManager {
 	private static final Map<String, EnergySource> energySources = new HashMap<>();
 
 	public static void initialize() {
-		energySources.put("sunny", new EnergySource("Solar", 15));
+		energySources.put("sunny", new EnergySource("Solar", 50));
 		energySources.put("windy", new EnergySource("Windy", 8));
 		energySources.put("rainy", new EnergySource("Electricity", 35));
 	}
